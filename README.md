@@ -1,5 +1,10 @@
 # Bellamente Skills
 
+> **This repo has moved.** Each skill now lives in its own repo. This one is archived and read-only.
+>
+> - Zo Computer: **[bellamente-zo-skill](https://github.com/The-Little-AI-Company/bellamente-zo-skill)**
+> - Any other coding agent (Codex, Claude Code, Cursor, and similar): **[bellamente-agent-skill](https://github.com/The-Little-AI-Company/bellamente-agent-skill)**
+
 Agent Skills that give an AI agent a local-first, auditable memory layer, backed by [Bellamente](https://github.com/The-Little-AI-Company/bellamente). Each skill wires Bellamente into one agent host so the agent recalls durable context at the start of a session and writes durable facts back for the next one.
 
 Bellamente runs on your machine. No memory leaves it. Every recall is traceable, every fact is versioned, and nothing is silently overwritten.
