@@ -9,9 +9,9 @@ Bellamente runs on your machine. No memory leaves it. Every recall is traceable,
 | Skill | Host | What it does |
 |---|---|---|
 | [Bellamente for Zo Computer](zo-computer/bellamente) | Zo Computer | Installs the Bellamente service on your Zo, recalls durable context at session start, writes durable facts back, and routes to your other skills based on what memory surfaces. |
-| [Bellamente for Claude Code](claude-code/bellamente) | Claude Code (and general agents) | Installs and self-manages the Bellamente server on your machine, recalls durable context at session start, writes durable facts back, and routes to your other skills based on what memory surfaces. |
+| [Bellamente for coding agents](coding-agent/bellamente) | Codex, Claude Code, Cursor, and similar | Installs and self-manages the Bellamente server on your machine, recalls durable context at session start, writes durable facts back, and routes to your other skills based on what memory surfaces. |
 
-Both skills share the same steady-state contract (session-start recall, write-back, cross-skill routing) and differ only in how they install and keep the service running. More hosts will land here as sibling folders.
+Both skills share the same steady-state contract (session-start recall, write-back, cross-skill routing) and differ only in how they install and keep the service running. The coding-agent skill depends on nothing but a shell, so any agent that can run a command can use it. More hosts will land here as sibling folders.
 
 ## Install: Bellamente for Zo Computer
 
@@ -23,15 +23,15 @@ Copy the skill folder into your Zo workspace, then let it install itself.
 
 Base memory mode needs no API key, no config, and no external service. Proxy mode, where Zo's own inference routes through Bellamente so the model calls memory mid-turn, is opt-in and documented in [`zo-computer/bellamente/references/byok-proxy-setup.md`](zo-computer/bellamente/references/byok-proxy-setup.md).
 
-## Install: Bellamente for Claude Code
+## Install: Bellamente for coding agents
 
-For Claude Code and other general agents, the skill installs the Bellamente server and manages its lifecycle itself, since there is no host supervisor.
+For Codex, Claude Code, Cursor, and any other agent that can run a shell command, the skill installs the Bellamente server and manages its lifecycle itself, since there is no host supervisor. It depends on no plugin system, no MCP server, and no specific runtime.
 
-1. Copy `claude-code/bellamente/` into your Claude Code skills directory so the skill lives at `~/.claude/skills/bellamente/` (or a project-level `.claude/skills/bellamente/`).
-2. Start a session and invoke the skill. The `## Bootstrap` block in `SKILL.md` runs once. It checks your platform, downloads the Bellamente binary, verifies its sha256, runs a feature check, and starts the local server.
-3. Once health is green, the skill edits its own `SKILL.md` and deletes the Bootstrap block. After that it does session-start recall, write-back, and cross-skill routing. The session-start step also runs `bella.sh start`, which recovers the server after a reboot.
+1. Copy `coding-agent/bellamente/` into wherever your agent loads skills or instruction files. Point the agent at the `SKILL.md` inside it (some agents read `SKILL.md` directly; for others, paste its contents into your agent's instruction file, such as `AGENTS.md`).
+2. On first use, the `## Bootstrap` block in `SKILL.md` runs once. It checks your platform, downloads the Bellamente binary, verifies its sha256, installs the CLI to `~/.bellamente/bella.sh`, runs a feature check, and starts the local server.
+3. Once health is green, the skill edits its own `SKILL.md` and deletes the Bootstrap block. After that it does session-start recall, write-back, and cross-skill routing. The session-start step runs `bella.sh start`, which recovers the server after a reboot.
 
-The current release ships a linux-x86_64 binary. On other platforms, run Bellamente in a linux-x86_64 container and point the skill at it. Proxy mode for OpenAI-compatible clients is opt-in and documented in [`claude-code/bellamente/references/proxy-setup.md`](claude-code/bellamente/references/proxy-setup.md).
+Every steady-state command calls `~/.bellamente/bella.sh`, one agent-independent path, so nothing depends on where the skill folder lives. The current release ships a linux-x86_64 binary. On other platforms, run Bellamente in a linux-x86_64 container and point the skill at it. Proxy mode for OpenAI-compatible clients is opt-in and documented in [`coding-agent/bellamente/references/proxy-setup.md`](coding-agent/bellamente/references/proxy-setup.md).
 
 ## What Bellamente is
 

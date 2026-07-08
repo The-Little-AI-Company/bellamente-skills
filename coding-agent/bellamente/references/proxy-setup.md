@@ -4,11 +4,11 @@ Two ways to use Bellamente. Default is **explicit-API mode**: the agent calls `/
 
 **Proxy mode** is the paper's full vision: an OpenAI-compatible client points its base URL at Bellamente's `/v1/chat/completions`, Bellamente injects the `searchMemory` tool, the model calls it mid-turn, and the whole recall path is traced. This is opt-in and needs an upstream model with function calling.
 
-## Where proxy mode fits with Claude Code
+## Where proxy mode fits
 
-Claude Code drives Anthropic models directly, so it does not route its own turns through an OpenAI-compatible proxy. In Claude Code, the memory round happens the explicit way: the skill calls `bella.sh recall` before acting and `bella.sh remember` after. That is the supported path and it loses nothing on recall.
+Many coding agents drive their own model directly (an Anthropic model for Claude Code, an OpenAI model for Codex) and do not route their turns through an external OpenAI-compatible proxy. For those, the memory round happens the explicit way: the skill calls `bella.sh recall` before acting and `bella.sh remember` after. That is the default path and it loses nothing on recall.
 
-Proxy mode is for the OpenAI-compatible clients and agents you run alongside Claude Code (your own app, an OpenAI SDK script, another agent runtime). Point any of them at `http://127.0.0.1:8080/v1` and they get the model-initiated `searchMemory` round and auto-capture for free.
+Proxy mode is for the OpenAI-compatible clients and agents where you can set the base URL (your own app, an OpenAI SDK script, another agent runtime). Point any of them at `http://127.0.0.1:8080/v1` and they get the model-initiated `searchMemory` round and auto-capture for free.
 
 ## The topology (this matters)
 
@@ -27,9 +27,9 @@ Then the flow is: your OpenAI-compatible client -> Bellamente (127.0.0.1:8080/v1
 ## Enabling it
 
 1. Put the provider key in your environment (`export DEEPSEEK_API_KEY=...`).
-2. `bash ~/.claude/skills/bellamente/scripts/bella.sh proxy enable deepseek`
-3. `bash ~/.claude/skills/bellamente/scripts/bella.sh restart` so the server reads the staged upstream.
-4. `bash ~/.claude/skills/bellamente/scripts/bella.sh proxy status` should report `MODE: proxy`.
+2. `bash ~/.bellamente/bella.sh proxy enable deepseek`
+3. `bash ~/.bellamente/bella.sh restart` so the server reads the staged upstream.
+4. `bash ~/.bellamente/bella.sh proxy status` should report `MODE: proxy`.
 5. Point your OpenAI-compatible client at the values below and send a memory-grounded question.
 
 Client config to paste:
@@ -56,7 +56,7 @@ Ask a memory-grounded question through the proxy and the model answers from your
 There is no host supervisor on a general dev machine, so the server does not survive a reboot on its own. The skill's session-start step runs `bella.sh start`, which recovers it whenever a session begins. If you want it always on, add one of these:
 
 - systemd user service: `systemd-run --user --unit=bellamente ~/.bellamente/bella-linux-x64`, or write a unit that runs the binary and `WantedBy=default.target`.
-- cron at reboot: `@reboot ~/.claude/skills/bellamente/scripts/bella.sh start` in `crontab -e`.
+- cron at reboot: `@reboot ~/.bellamente/bella.sh start` in `crontab -e`.
 - macOS launchd: a LaunchAgent plist that runs the binary at login.
 
 None of these are required. Session-start recovery is enough for interactive use.

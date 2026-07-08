@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bellamente daily-driver CLI for Claude Code and other general agents.
+# Bellamente daily-driver CLI for any coding agent (Codex, Claude Code, Cursor, ...).
 # Wraps the localhost HTTP API so an agent calls one script instead of
 # re-deriving curl shapes every session, and manages the local server
 # lifecycle (start/stop/restart) since there is no host supervisor.
